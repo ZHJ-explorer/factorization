@@ -1,5 +1,6 @@
 import math
 import time
+import sys
 def breakdown(N):
     result = []
     for i in range(2, int(math.sqrt(N)) + 1):
@@ -10,7 +11,12 @@ def breakdown(N):
     if N != 1:  # 说明再经过操作之后 N 留下了一个素数
         result.append(N)
     return result
-N = int(input("Enter a number to factorize: "))
+
+if len(sys.argv) > 1:
+    N = int(sys.argv[1])
+else:
+    N = int(input("Enter a number to factorize: "))
+
 time_start = time.time()
 result = breakdown(N)
 time_end = time.time()
