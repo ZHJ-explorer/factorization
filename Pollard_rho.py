@@ -4,7 +4,7 @@ import random
 from math import gcd
 from multiprocessing import Process, Queue, cpu_count
 
-def is_prime(n, k=5):
+def is_prime(n):
     #米勒-拉宾素性测试
     if n <= 1:
         return False
@@ -20,9 +20,12 @@ def is_prime(n, k=5):
         d //= 2
         r += 1
     
-    # 进行k次测试
-    for _ in range(k):
-        a = random.randint(2, n - 2)
+    # 固定的7个a值，对2^64以内保证正确
+    fixed_a_values = [2, 325, 9375, 28178, 450775, 9780504, 1795265022]
+    
+    for a in fixed_a_values:
+        if a >= n - 1:
+            continue  # 跳过大于n-2的值
         x = pow(a, d, n)
         if x == 1 or x == n - 1:
             continue
