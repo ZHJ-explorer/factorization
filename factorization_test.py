@@ -80,8 +80,8 @@ def run_algorithm(algorithm_file, number):
 # 从输出中提取执行时间
 def extract_execution_time(output):
     logging.debug(f"从输出中提取执行时间: {output[:100]}...")
-    # 匹配 "任务执行时间: X.XXXX秒" 或科学计数法格式 "任务执行时间: X.XXXXXe-XX秒"
-    pattern = r'任务执行时间: ([0-9]+(?:\.[0-9]+)?(?:e[-+]?[0-9]+)?)秒'
+    # 匹配 "任务执行时间: X.XXXX秒" 或各种科学计数法格式（如X.XXXXXe-XX秒、.XXXXXe-XX秒、XE-XX秒等）
+    pattern = r'任务执行时间: ([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)秒'
     match = re.search(pattern, output)
     if match:
         time_str = match.group(1)
@@ -114,8 +114,8 @@ def test_single_number(number, pollard_file, naive_file):
         'naive_time': naive_time
     }
 
-# 生成CSV输出文件
-def generate_csv_output(results, output_file):
+# 生成CSV输出文件（支持追加模式）
+def generate_csv_output(result, output_file, write_header=False):
     logging.info(f"生成CSV输出文件: {output_file}")
     try:
         # CSV文件头部
@@ -130,23 +130,24 @@ def generate_csv_output(results, output_file):
         ]
         
         # 写入CSV文件
-        with open(output_file, 'w', newline='', encoding='utf-8') as f:
+        mode = 'w' if write_header else 'a'
+        with open(output_file, mode, newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL)
-            writer.writeheader()
+            if write_header:
+                writer.writeheader()
             
-            for result in results:
-                row = {
-                    "Original Number": result['original_number'],
-                    "Pollard's Rho Run 1 Time": result['pollard_times'][0],
-                    "Pollard's Rho Run 2 Time": result['pollard_times'][1],
-                    "Pollard's Rho Run 3 Time": result['pollard_times'][2],
-                    "Pollard's Rho Run 4 Time": result['pollard_times'][3],
-                    "Pollard's Rho Run 5 Time": result['pollard_times'][4],
-                    "Naive Algorithm Time": result['naive_time']
-                }
-                writer.writerow(row)
+            row = {
+                "Original Number": result['original_number'],
+                "Pollard's Rho Run 1 Time": result['pollard_times'][0],
+                "Pollard's Rho Run 2 Time": result['pollard_times'][1],
+                "Pollard's Rho Run 3 Time": result['pollard_times'][2],
+                "Pollard's Rho Run 4 Time": result['pollard_times'][3],
+                "Pollard's Rho Run 5 Time": result['pollard_times'][4],
+                "Naive Algorithm Time": result['naive_time']
+            }
+            writer.writerow(row)
         
-        logging.info(f"成功生成CSV文件: {output_file}")
+        logging.info(f"成功将数字 {result['original_number']} 的测试结果写入CSV文件: {output_file}")
     except PermissionError:
         logging.error(f"没有权限写入CSV文件: {output_file}")
         raise
@@ -197,32 +198,27 @@ def main():
         data_file = "test.txt"
         pollard_file = "Pollard_rho.py"
         naive_file = "Naive_factorization.py"
-        output_files = [
-            "Pollard_rho_test_results.csv",
-            "Naive_factorization_test_results.csv"
-        ]
+        output_file = "factorization_test_results.csv"
         
         # 1. 数据准备
         numbers = read_and_prepare_data(data_file)
         
         logging.info(f"开始测试所有 {len(numbers)} 个数字")
         
-        # 2. 执行测试
-        results = []
-        for number in numbers:
+        # 2. 执行测试并逐行写入结果
+        for i, number in enumerate(numbers):
             try:
                 result = test_single_number(number, pollard_file, naive_file)
-                results.append(result)
+                # 第一次测试时写入CSV头部
+                write_header = (i == 0)
+                # 测试一个数字就记录一次时间
+                generate_csv_output(result, output_file, write_header)
             except Exception as e:
                 logging.error(f"测试数字 {number} 时发生错误，跳过该数字: {e}")
                 # 可以选择继续测试其他数字
         
-        # 3. 生成输出文件
-        for output_file in output_files:
-            generate_csv_output(results, output_file)
-        
-        # 4. 验证输出文件
-        if verify_output_files(output_files):
+        # 3. 验证输出文件
+        if verify_output_files([output_file]):
             logging.info("因式分解算法性能测试完成，所有输出文件验证通过")
         else:
             logging.error("因式分解算法性能测试完成，但输出文件验证失败")
