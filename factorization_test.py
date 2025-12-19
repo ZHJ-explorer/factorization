@@ -11,7 +11,7 @@ def setup_logging():
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler('factorization_test.log'),
+            logging.FileHandler('factorization_test.log',encoding='utf-8'),
             logging.StreamHandler()
         ]
     )
