@@ -162,5 +162,7 @@ $Pollard-Rho$ 算法是一种基于随机化的因式分解算法，其核心思
 ## 参考文献
 
 [1] G. L. Miller, “Riemann’s hypothesis and tests for primality,” J. Comput. Syst. Sci., vol. 13, no. 3, pp. 300–317, Dec. 1976, doi: 10.1016/S0022-0000(76)80043-8.
+
 [2] J. M. Pollard, “A monte carlo method for factorization,” BIT, vol. 15, no. 3, pp. 331–334, Sept. 1975, doi: 10.1007/BF01933667.
+
 [3] M. O. Rabin, “Probabilistic algorithm for testing primality,” J. Number Theory, vol. 12, no. 1, pp. 128–138, Feb. 1980, doi: 10.1016/0022-314X(80)90084-0.
