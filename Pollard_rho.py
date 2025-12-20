@@ -90,7 +90,7 @@ def parallel_pollard_rho_task(n, c, result_queue):
         pass
 
 def parallel_factorize(n):
-    #    并行分解质因数
+    # 并行分解质因数
     if n == 1:
         return []
     if is_prime(n):
@@ -113,8 +113,7 @@ def parallel_factorize(n):
         p = Process(target=parallel_pollard_rho_task, args=(n, c, result_queue))
         processes.append(p)
         p.start()
-    
-    # 等待结果，不设置超时
+
     factor = None
     while factor is None:
         if not result_queue.empty():
@@ -138,17 +137,12 @@ def main():
         n = int(sys.argv[1])
     else:
         n = int(input("Enter a number to factorize: "))
-    
-    # 记录开始时间
+
     time_start = time.time()
-    
-    # 分解质因数
     factors = parallel_factorize(n)
-    
-    # 排序并输出结果
     factors.sort()
-    
     time_end = time.time()
+    
     print(f"分解 {n} 的质因数结果: {factors}")
     print(f"任务执行时间: {time_end - time_start:.6f}秒")
 
