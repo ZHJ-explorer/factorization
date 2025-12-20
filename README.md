@@ -2,7 +2,20 @@
 
 ## 项目简介
 
-本项目实现了基于 $Pollard-Rho$ 算法的大整数因式分解，并提供了与传统朴素因式分解算法的性能对比验证脚本。$Pollard-Rho$ 算法是一种高效的随机化因式分解算法，特别适合于分解大整数，其平均时间复杂度为 $O(n^{1/4})log(n)$，远优于传统朴素算法的 $O(\sqrt{n})$。
+本项目实现了基于 $Pollard-Rho$ 算法的大整数因式分解，并提供了与传统朴素因式分解算法的性能对比验证脚本。
+$Pollard-Rho$ 算法是一种高效的随机化因式分解算法，特别适合于分解大整数，其平均时间复杂度为 $O(n^{1/4})log(n)$，远优于传统朴素算法的 $O(\sqrt{n})$。
+
+## 依赖
+
+- Python 3.6+
+- 标准库：`sys`, `time`, `random`, `math`, `multiprocessing`
+
+## 克隆仓库
+
+```bash
+git clone https://github.com/your-username/factorization.git
+cd factorization
+```
 
 ## 项目架构
 
@@ -141,11 +154,6 @@ $Pollard-Rho$ 算法是一种基于随机化的因式分解算法，其核心思
 4. **`generate_csv_output(result, output_file, write_header=False)`**：生成 CSV 格式的测试结果。
 5. **`main()`**：主函数，协调整个测试流程。
 
-## 依赖
-
-- Python 3.6+
-- 标准库：`sys`, `time`, `random`, `math`, `multiprocessing`
-- 第三方库：无
 
 ## 许可证
 
